@@ -14,13 +14,13 @@ const app = express();
 const server = http.createServer(app);
 
 const PORT = process.env.PORT || 4000;
-const corsOrigin = 'http://127.0.0.1:5500/index.html';
+const corsOrigin = "*";
 
 // Basic security & parsing
 app.use(helmet());
 app.use(express.json({ limit: '5mb' }));
 app.use(express.urlencoded({ extended: true }));
-app.use(cors({ origin: corsOrigin }));
+app.use(cors({ origin: "*" }));
 
 // Rate limiting
 const limiter = rateLimit({
