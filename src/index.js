@@ -14,7 +14,7 @@ const app = express();
 const server = http.createServer(app);
 
 const PORT = process.env.PORT || 4000;
-const corsOrigin = '*';
+const corsOrigin = 'http://127.0.0.1:5500/index.html';
 
 // Basic security & parsing
 app.use(helmet());
