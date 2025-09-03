@@ -5,6 +5,24 @@ const Room = require('../models/Room');
 const { isValidRoomCode } = require('../utils/validators');
 
 const router = express.Router();
+// Auto-create telemed room with code format 'telemed-XXXX'
+router.post('/autocreate', async (req, res) => {
+    try {
+        // Generate a random 4-5 digit number
+        const randomNum = Math.floor(1000 + Math.random() * 90000); // 4-5 digits
+        const roomCode = `telemed-${randomNum}`;
+        // Ensure uniqueness
+        const existing = await Room.findOne({ code: roomCode });
+        if (existing) {
+            return res.status(409).json({ error: 'Room code already exists. Please try again.' });
+        }
+        const room = await Room.create({ code: roomCode, title: 'telemed' });
+        return res.status(201).json({ room });
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Server error' });
+    }
+});
 
 // Create room - auto-generate a friendly code if not provided
 router.post('/create', async(req, res) => {
