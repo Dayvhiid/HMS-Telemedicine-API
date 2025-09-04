@@ -15,7 +15,7 @@ const server = http.createServer(app);
 
 const PORT = process.env.PORT || 4000;
 const corsOrigin = "*";
-
+app.set('trust proxy', true);
 // Basic security & parsing
 app.use(helmet());
 app.use(express.json({ limit: '5mb' }));
