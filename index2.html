@@ -406,20 +406,28 @@
         startCallBtn.addEventListener('click', async () => {
             try {
                 localStream = await navigator.mediaDevices.getUserMedia({
-                    video: true,
+                    video: { width: 640, height: 480 }, // lower resolution for speed
                     audio: true
                 });
-                
+
                 localVideo.srcObject = localStream;
                 videoSection.classList.remove('hidden');
                 startCallBtn.classList.add('hidden');
                 endCallBtn.classList.remove('hidden');
 
-                // Create peer connection
+                // Create peer connection with custom STUN server
                 peer = new SimplePeer({
                     initiator: true,
                     trickle: false,
-                    stream: localStream
+                    stream: localStream,
+                    config: {
+                        iceServers: [
+                            { urls: 'stun:stun.l.google.com:19302' },
+                             { urls: 'stun:stun1.l.google.com:19302' },
+                             { urls: 'stun:stun2.l.google.com:19302' }
+                            // You can add TURN servers here for even better reliability
+                        ]
+                    }
                 });
 
                 peer.on('signal', (signal) => {
@@ -459,7 +467,7 @@
             if (!localStream) {
                 try {
                     localStream = await navigator.mediaDevices.getUserMedia({
-                        video: true,
+                        video: { width: 640, height: 480 }, // lower resolution for speed
                         audio: true
                     });
                     localVideo.srcObject = localStream;
@@ -473,11 +481,17 @@
             startCallBtn.classList.add('hidden');
             endCallBtn.classList.remove('hidden');
 
-            // Create peer as receiver
+            // Create peer as receiver with custom STUN server
             peer = new SimplePeer({
                 initiator: false,
                 trickle: false,
-                stream: localStream
+                stream: localStream,
+                config: {
+                    iceServers: [
+                        { urls: 'stun:stun.l.google.com:19302' }
+                        // You can add TURN servers here for even better reliability
+                    ]
+                }
             });
 
             peer.on('signal', (signal) => {
