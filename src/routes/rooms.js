@@ -5,17 +5,35 @@ const Room = require('../models/Room');
 const { isValidRoomCode } = require('../utils/validators');
 
 const router = express.Router();
+// Get a list of all available rooms (no pagination)
+router.get('/list', async (req, res) => {
+    try {
+        const rooms = await Room.find().sort({ createdAt: -1 });
+        return res.json({ rooms });
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Server error' });
+    }
+});
+
 // Auto-create telemed room with code format 'telemed-XXXX'
 router.post('/autocreate', async (req, res) => {
     try {
-        // Generate a random 4-5 digit number
-        const randomNum = Math.floor(1000 + Math.random() * 90000); // 4-5 digits
-        const roomCode = `telemed-${randomNum}`;
-        // Ensure uniqueness
-        const existing = await Room.findOne({ code: roomCode });
+        // Generate a random 4-5 digit number and allow a few retries for uniqueness
+        let roomCode;
+        let attempts = 0;
+        let existing = null;
+        do {
+            const randomNum = Math.floor(1000 + Math.random() * 90000); // 4-5 digits
+            roomCode = `telemed-${randomNum}`;
+            existing = await Room.findOne({ code: roomCode });
+            attempts++;
+        } while (existing && attempts < 5);
+
         if (existing) {
-            return res.status(409).json({ error: 'Room code already exists. Please try again.' });
+            return res.status(409).json({ error: 'Failed to generate a unique room code. Please try again.' });
         }
+
         const room = await Room.create({ code: roomCode, title: 'telemed' });
         return res.status(201).json({ room });
     } catch (err) {
