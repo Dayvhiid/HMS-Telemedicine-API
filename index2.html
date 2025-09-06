@@ -424,7 +424,31 @@
                         iceServers: [
                             { urls: 'stun:stun.l.google.com:19302' },
                              { urls: 'stun:stun1.l.google.com:19302' },
-                             { urls: 'stun:stun2.l.google.com:19302' }
+                             { urls: 'stun:stun2.l.google.com:19302' },
+                             {
+                                urls: "stun:something.meteredstun.ca:89032",
+                            },
+                            //Below is list of meterd connections
+                            {
+                                urls: "turn:global.relay.metered.ca:80",
+                                username: "f6507426c0f4f89d0bda02e2",
+                                credential: "7YF0907XexAfvkbL",
+                            },
+                            {
+                                urls: "turn:global.relay.metered.ca:80?transport=tcp",
+                                username: "f6507426c0f4f89d0bda02e2",
+                                credential: "7YF0907XexAfvkbL",
+                            },
+                            {
+                                urls: "turn:global.relay.metered.ca:443",
+                                username: "f6507426c0f4f89d0bda02e2",
+                                credential: "7YF0907XexAfvkbL",
+                            },
+                            {
+                                urls: "turns:global.relay.metered.ca:443?transport=tcp",
+                                username: "f6507426c0f4f89d0bda02e2",
+                                credential: "7YF0907XexAfvkbL",
+                            },
                             // You can add TURN servers here for even better reliability
                         ]
                     }
